@@ -1,12 +1,11 @@
-function [avg, blk] = remove_nonprofiling_data_fcs(avg, blk, calibrated_or_voltages)
+function [avg, blk] = remove_nonprofiling_data_fcs(avg, blk, head, calibrated_or_voltages)
 % function [avg, blk] = remove_nonprofiling_data_fcs(avg, blk, calibrated_or_voltages)
-%
-%   Remove elements from avg and
 %
 %   Inputs
 %   ------
 %   avg: output of mean_of_T_P_voltages or average_over_blocks_fcs
 %   blk: output of reshape_to_Nfft_blocks
+%   head: output of load_and_modify_header
 %   calibrated_or_voltages: either 'calibrated' or 'voltages'
 %       (Need to know whether avg.Wspd_min is in m/s or V/s)
 
@@ -40,14 +39,9 @@ function profiling_inds = get_profiling_inds(Wspd_min)
     % To find where profiling begins, look for first three consecutive Wspd > 0.05
     % To find where profiling ceases, look for first three consecutive Wspd < 0.05
     % (after profiling has begun, obviously)
-
-    % This is the one spot in the "on-board" processing where we need to hard-code
-    % a calibration coefficient.
-    % Based on units 4002 and 4003, it appears we can assume coef.P(2) is approximately 77
-    cP2 = 77;
     if strcmp(calibrated_or_voltages, 'voltages')
         psi_to_dbar = 1/1.45;
-        Wspd_min = Wspd_min*cP2*psi_to_dbar;
+        Wspd_min = Wspd_min*head.c2P*psi_to_dbar;
     end
 
     Wspd_min_threshold = 0.05;
