@@ -21,14 +21,14 @@ function Vavg = mean_of_T_P_voltages(Vblk, head)
     Vavg.T2 = mean(Vblk.T2, avg_dim);
 
     Vavg.P = mean(Vblk.P, avg_dim);
-
+    
     ti = 1:50:head.Nfft;
+    Delta_VP = Vblk.P(:, end) - Vblk.P(:, 1);
+    Delta_VP_ti = diff(Vblk.P(:, ti), [], avg_dim);
+
     if head.isUP
-        Delta_VP = Vblk.P(:, 1) - Vblk.P(:, end);
-        Delta_VP_ti = diff(Vblk.P(:, flip(ti)), [], avg_dim);
-    else
-        Delta_VP = Vblk.P(:, end) - Vblk.P(:, 1);
-        Delta_VP_ti = diff(Vblk.P(:, ti), [], avg_dim);
+        Delta_VP = -Delta_VP;
+        Delta_VP_ti = -Delta_VP_ti;
     end
 
     dt = 1/head.primary_sample_rate;
