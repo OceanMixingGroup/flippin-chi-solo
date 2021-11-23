@@ -45,8 +45,8 @@ function [c1Axp, c1Ayp, c1Azp] = calibrate_C1A_coefs()
     % 60 to 90% of the maximum pressure
     normalized_pressure = P_approx/max(P_approx);
     near_bottom = normalized_pressure > 0.6 & normalized_pressure < 0.9;
-    c1Axp = -c2Ap*mean(data.AX(near_bottom))
-    c1Ayp = -c2Ap*mean(data.AY(near_bottom))
+    c1Axp = -c2Ap*mean(data.AX(near_bottom));
+    c1Ayp = -c2Ap*mean(data.AY(near_bottom));
 
     % c1Azp in not described in the paper, but it follows the same logic as
     % c1Axp and c1Ayp, except that the mean is +g, not zero.
