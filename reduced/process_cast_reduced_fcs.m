@@ -38,7 +38,7 @@ function [avg, Vblk] = process_cast_reduced_fcs(header_dir, unit_number, data_fi
     avg = derive_epsilon_and_chi_reduced(Vpsi, Vavg, avg, head, fl, fh);
     avg.time = mean(Vblk.time, 2);
 
-    if all(isfinite(Vpsi_Az))
+    if ~isUP & all(isfinite(Vpsi_Az))
         avg.SSH = convert_wave_acceleration_to_SSH_spectrum(Vpsi_Az, f_Az, head);
     end
 
