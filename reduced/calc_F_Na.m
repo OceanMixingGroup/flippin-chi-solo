@@ -50,7 +50,7 @@ function F_Na_i = calc_F_Na_single(eps_init, Wspd, nu, fl, fh)
     function out = F_Na_implicit_eqn(F_Na)
         H2 = complete_shear_transfer_function_fcs(f, Wspd);
         H2(isnan(H2)) = min(H2);
-        numer = H2.*nasmyth_kgh(k, eps_init/F_Na^(3/2), 'nu', nu);
+        numer = H2.*nasmyth_fcs(k, eps_init/F_Na^(3/2), 'nu', nu);
         denom = (8.05*k.^(1/3)*eps_init^(2/3)/F_Na);
         out = mean(numer./denom) - F_Na;
     end
