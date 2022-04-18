@@ -1,10 +1,10 @@
 # Flippin' Chi Solo (FCS) processing code
 
-Ken Hughes, July 2021
+Ken Hughes, April 2022
 
 For full details, see 
 
-Hughes et al. (in prep). An ocean turbulence data reduction scheme for autonomous, vertically profiling floats.
+Hughes et al. (under review). A turbulence data reduction scheme for autonomous and expendable profiling floats
 
 ## Directory layout:
 
