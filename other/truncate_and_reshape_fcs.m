@@ -1,13 +1,13 @@
-function struct_out = truncate_and_reshape_fcs(struct_in, Nfft, head, calibrated_or_voltages)
+function struct_out = truncate_and_reshape_fcs(struct_in, Nseg, head, calibrated_or_voltages)
 % function struct_out = truncate_and_reshape_fcs(struct_in, head)
 %
 %   1. Remove non-profiling data
-%   2. Reshape to N x Nfft arrays (removing deepest elements to get multiple of Nfft)
+%   2. Reshape to N x Nseg arrays (removing deepest elements to get multiple of Nseg)
 %
 %   Inputs
 %   ------
 %   struct_in: output of raw_load_solo or calibrate_voltages_fcs
-%   Nfft: Number of points that will be used later in FFT
+%   Nseg: Number of points that will be used later for power spectra
 %   head: output of load_and_modify_header
 %   calibrated_or_voltages: either 'calibrated' or 'voltages' if struct_in is the output
 %       of calibrated_voltages_fcs or raw_load_solo, respectively
@@ -27,7 +27,7 @@ function struct_out = truncate_and_reshape_fcs(struct_in, Nfft, head, calibrated
     % Reshape everything first
     for ii = 1:length(flds)
         fld_name = flds{ii};
-        arr = reshape_to_Nfft(s.(fld_name), head.isUP);
+        arr = reshape_to_Nseg(s.(fld_name), head.isUP);
         struct_out.(fld_name) = arr;
     end
 
@@ -39,19 +39,19 @@ function struct_out = truncate_and_reshape_fcs(struct_in, Nfft, head, calibrated
         struct_out.(fld_name) = struct_out.(fld_name)(is_profiling, :);
     end
 
-function Xout = reshape_to_Nfft(X, isUP)
+function Xout = reshape_to_Nseg(X, isUP)
     assert(size(X, 2) == Ndata, 'X to reshape is wrong shape')
-    Nz = floor(Ndata/Nfft);
+    Nz = floor(Ndata/Nseg);
     if isUP
-        idx = Ndata-Nfft*Nz+1:Ndata;
+        idx = Ndata-Nseg*Nz+1:Ndata;
     else
-        idx = 1:Nfft*Nz;
+        idx = 1:Nseg*Nz;
     end
-    Xout = reshape(X(idx), Nfft, Nz)';
+    Xout = reshape(X(idx), Nseg, Nz)';
 end
 
 function profiling_inds = get_profiling_inds(pressure_array)
-    % Input is N x Nfft array of pressure values
+    % Input is N x Nseg array of pressure values
     % From this, an N-element vector of vertical velocities (Wspd) is derived
     %
     % To find where profiling begins, look for first three consecutive Wspd > Wmin

@@ -4,7 +4,7 @@ function [avg, blk] = remove_nonprofiling_data_fcs(avg, blk, head, calibrated_or
 %   Inputs
 %   ------
 %   avg: output of mean_of_T_P_voltages or average_over_blocks_fcs
-%   blk: output of reshape_to_Nfft_blocks
+%   blk: output of reshape_to_Nseg_blocks
 %   head: output of load_and_modify_header
 %   calibrated_or_voltages: either 'calibrated' or 'voltages'
 %       (Need to know whether avg.Wspd_min is in m/s or V/s)

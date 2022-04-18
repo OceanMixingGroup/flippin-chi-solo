@@ -21,4 +21,12 @@ function out = combine_turbulence_values_fcs(in1, in2)
     idx = in1 > 10*in2 | in2 > 10*in1;
     out(idx) = min(in1(idx), in2(idx));
 
+    % Special case where one sensor is known to be bad
+    % e.g., for unit 4003 in FCS19 experiment where S1 was bad throughout
+    if all(isnan(in1)) & sum(isfinite(in2)) > 0
+        out = in2;
+    elseif all(isnan(in2)) & sum(isfinite(in1)) > 0
+        out = in1;
+    end
+
 end

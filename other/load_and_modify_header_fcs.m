@@ -34,7 +34,11 @@ load([header_dir 'header_' pod '.mat'], 'head');
 [profile_time, isUP] = parse_filename_fcs(data_filename);
 head.isUP = isUP;
 head.data_filename = data_filename;
-head.Nfft = 512;
+
+% Power spectra options
+head.Nseg = 512;
+head.Nfft = 256;
+head.Noverlap = 128;
 
 % Modifications for 4002 and 4003 for FCS19 were developed by Aurelie Moulin
 switch unit_number
@@ -72,8 +76,13 @@ switch unit_number
             head.sensor_id{S1_id} = '12-04';
             head.coef.S1(1) = 0.2781;
         end
+        % It appears, however, that S1 is bad throughout the whole experiment
+        % Setting sensitivity to zero so that epsilon1 will equal 0
+        % Leaving earlier calibration for reference
+        head.coef.S1(1) = 0;
+
         head.sensor_id{S2_id} = '12-09';
-        head.S2(1) = 0.3434;
+        head.coef.S2(1) = 0.3434;
 
         head.coef.S1(4) = 1.12;
         head.coef.S2(4) = 1.12;

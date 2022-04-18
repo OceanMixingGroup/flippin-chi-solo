@@ -24,7 +24,7 @@ function H2k = complete_thermistor_transfer_function_fcs(f, W)
     k = f/W;
 
     H2k_FT = thermal_response_transfer_function_fcs(f);
-    fc_butter = 50;
+    fc_butter = 40;
     H2f_AA = analog_butterworth_transfer_function_fcs(f, fc_butter);
     H2f_D = digital_filter_transfer_function_fcs(f);
 
