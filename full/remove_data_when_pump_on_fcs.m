@@ -26,7 +26,8 @@ function phi = remove_data_when_pump_on_fcs(phi, blk, head);
 
     pump_on = false(1, Nz);
     for zi = 2:Nz-1
-        [pxx, f] = pwelch(AZ(zi, :), head.Nfft, 0, head.Nfft, head.primary_sample_rate);
+        [pxx, f] = pwelch(AZ(zi, :), head.Nfft, ...
+            head.Noverlap, head.Nfft, head.primary_sample_rate);
         [pump_idx, no_pump_idx] = get_pump_indices(f);
         ratio = max(pxx(pump_idx))/mean(pxx(no_pump_idx));
 

@@ -54,7 +54,8 @@ function shear = calibrate_shear(cS, Vs, Wspd)
     % Shear voltage usually has ~2V DC component
     Vs = filter_point3Hz(Vs, 'highpass');
     alpha_coef = get_alpha_coef(cS);
-    shear = alpha_coef*Vs./Wspd.^2;
+    Wspd_sm = lowpass_Wspd(Wspd);
+    shear = alpha_coef*Vs./Wspd_sm.^2;
 end
 
 function A = calibrate_acceleration(cA, VA)
@@ -72,6 +73,14 @@ function Vfilt = filter_point3Hz(V, low_or_high)
     fc = 0.3;
     [b, a] = butter(4, fc/(fs/2), low_or_high(1:end-4));
     Vfilt = filtfilt(b, a, V);
+end
+
+function Wspd_sm = lowpass_Wspd(Wspd)
+    % Smooth Wspd before calculating shear on time scale of segment
+    % Similar to the "block" approach used by Ward et al. (2014, J. Tech)
+    fc = head.primary_sample_rate/head.Nseg;
+    [b, a] = butter(4, fc/(fs/2), 'low');
+    Wspd_sm = filtfilt(b, a, Wspd);
 end
 
 function Wspd = calculate_Wspd(P)

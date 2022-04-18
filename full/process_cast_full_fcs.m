@@ -1,5 +1,5 @@
 function [avg, cal, blk, phi, head, data] = process_cast_full_fcs(header_dir, unit_number, data_filename)
-% function process_cast_full_fcs(header_dir, unit_number, data_filename)
+% function [avg, cal, blk, phi, head, data] = process_cast_full_fcs(header_dir, unit_number, data_filename)
 %   Process a single FCS cast with a standard method adapted from Chameleon processing
 %
 %   Inputs
@@ -23,7 +23,7 @@ function [avg, cal, blk, phi, head, data] = process_cast_full_fcs(header_dir, un
     data = raw_load_solo(data_filename);
     cal = calibrate_voltages_fcs(data, head);
     cal = deglitch_shear_fcs(cal, head);
-    blk = reshape_to_Nfft_blocks_fcs(cal, head.Nfft, head, 'calibrated');
+    blk = reshape_to_Nseg_blocks_fcs(cal, head.Nseg, head, 'calibrated');
     avg = average_over_blocks_fcs(blk);
     [avg, blk] = remove_nonprofiling_data_fcs(avg, blk, head, 'calibrated');
     phi = calc_spectra_fcs(blk, head);

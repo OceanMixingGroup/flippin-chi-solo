@@ -1,6 +1,6 @@
 function avg = average_over_blocks_fcs(blk)
 % function avg = average_over_blocks_fcs(blk)
-%   Average each Nfft-length segment and derive viscosity and diffusivity
+%   Average each Nseg-length segment and derive viscosity and diffusivity
 %
 %   Input
 %   -----
