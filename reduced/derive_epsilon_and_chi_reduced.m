@@ -1,40 +1,53 @@
-function avg = derive_epsilon_and_chi_reduced(Vpsi, Vavg, avg, head, fl, fh);
-% function avg = derive_epsilon_and_chi_reduced(Vpsi, Vavg, head);
+function avg = derive_epsilon_and_chi_reduced(Vpsi, Vavg, avg, head, fbounds)
+% function avg = derive_epsilon_and_chi_reduced(Vpsi, Vavg, avg, head, fbounds)
 %   Invert power-law fits of spectra to find eps and chi
 %
 %   Inputs
 %   ------
-%   Vpsi: power-law fits of voltage spectra calculated on-board
+%   Vpsi: struct with the two power-law fits of voltage spectra calculated on-board
 %         or output of fit_spectra_to_power_laws_fcs if simulating on-board processing with Matlab
 %   Vavg: voltage means calculated on-board
 %         or output of mean_of_T_P_voltages if simulating on-board processing with Matlab
 %   avg: struct of calibrated data where each quantity is Nz x 1
 %   head: output of load_and_modify_header
-%   fl, fh: low and high ends of frequency fitting range
+%   fbounds: four-element vector; second output of define_freq_fit_ranges_fcs
 %
 %   Output
 %   ------
 %   avg: same as input with additional fields
-%        epsilon, eps1, eps2, eps_init1, eps_init2, F_Na1, F_Na2
-%        chi, chi1, chi2, chi_init1, chi_init2, F_Kr1, F_Kr2
+%        epsilon, eps1, eps2, eps_init1, eps_init2, F_Na1, F_Na2, eps1_score, eps2_score,
+%        chi, chi1, chi2, chi_init1, chi_init2, F_Kr1, F_Kr2, chi1_score, chi2_score,
 
-
-    avg.eps_init1 = calc_eps_init(Vpsi.psi_S1_fit, avg.Wspd, head.coef.S1);
-    avg.eps_init2 = calc_eps_init(Vpsi.psi_S2_fit, avg.Wspd, head.coef.S2);
-    avg.F_Na1 = calc_F_Na(avg.eps_init1, avg.Wspd, avg.nu, fl, fh);
-    avg.F_Na2 = calc_F_Na(avg.eps_init2, avg.Wspd, avg.nu, fl, fh);
-    avg.eps1 = correct_eps_init(avg.eps_init1, avg.F_Na1);
-    avg.eps2 = correct_eps_init(avg.eps_init2, avg.F_Na2);
+    for ii = 1:2
+        fl = fbounds(2*ii-1);
+        fh = fbounds(2*ii);
+        avg.eps_init1(:, ii) = calc_eps_init(Vpsi.psi_S1_fit(:, ii), avg.Wspd, head.coef.S1);
+        avg.eps_init2(:, ii) = calc_eps_init(Vpsi.psi_S2_fit(:, ii), avg.Wspd, head.coef.S2);
+        avg.F_Na1(:, ii) = calc_F_Na(avg.eps_init1(:, ii), avg.Wspd, avg.nu, fl, fh);
+        avg.F_Na2(:, ii) = calc_F_Na(avg.eps_init2(:, ii), avg.Wspd, avg.nu, fl, fh);
+        avg.eps1(:, ii) = correct_eps_init(avg.eps_init1(:, ii), avg.F_Na1(:, ii));
+        avg.eps2(:, ii) = correct_eps_init(avg.eps_init2(:, ii), avg.F_Na2(:, ii));
+    end
+    [avg.eps1_score, avg.eps1] = score_and_average(avg.eps1);
+    [avg.eps2_score, avg.eps2] = score_and_average(avg.eps2);
     avg.epsilon = combine_turbulence_values_fcs(avg.eps1, avg.eps2);
 
-    avg.chi_init1 = calc_chi_init(Vpsi.psi_T1P_fit, Vavg.T1, avg.epsilon, ...
-                                  avg.nu, head.coef.T1, head.coef.T1P);
-    avg.chi_init2 = calc_chi_init(Vpsi.psi_T2P_fit, Vavg.T2, avg.epsilon, ...
-                                  avg.nu, head.coef.T2, head.coef.T2P);
-    avg.F_Kr1 = calc_F_Kr(avg.chi_init1, avg.epsilon, avg.Wspd, avg.nu, avg.DT, fl, fh);
-    avg.F_Kr2 = calc_F_Kr(avg.chi_init2, avg.epsilon, avg.Wspd, avg.nu, avg.DT, fl, fh);
-    avg.chi1 = correct_chi_init(avg.chi_init1, avg.F_Kr1);
-    avg.chi2 = correct_chi_init(avg.chi_init2, avg.F_Kr2);
+    for ii = 1:2
+        fl = fbounds(2*ii-1);
+        fh = fbounds(2*ii);
+        avg.chi_init1(:, ii) = calc_chi_init(...
+            Vpsi.psi_T1P_fit(:, ii), Vavg.T1, avg.epsilon, avg.nu, head.coef.T1, head.coef.T1P);
+        avg.chi_init2(:, ii) = calc_chi_init(...
+            Vpsi.psi_T2P_fit(:, ii), Vavg.T2, avg.epsilon, avg.nu, head.coef.T2, head.coef.T2P);
+        avg.F_Kr1(:, ii) = calc_F_Kr(...
+            avg.chi_init1(:, ii), avg.epsilon, avg.Wspd, avg.nu, avg.DT, fl, fh);
+        avg.F_Kr2(:, ii) = calc_F_Kr(...
+            avg.chi_init2(:, ii), avg.epsilon, avg.Wspd, avg.nu, avg.DT, fl, fh);
+        avg.chi1(:, ii) = correct_chi_init(avg.chi_init1(:, ii), avg.F_Kr1(:, ii));
+        avg.chi2(:, ii) = correct_chi_init(avg.chi_init2(:, ii), avg.F_Kr2(:, ii));
+    end
+    [avg.chi1_score, avg.chi1] = score_and_average(avg.chi1);
+    [avg.chi2_score, avg.chi2] = score_and_average(avg.chi2);
     avg.chi = combine_turbulence_values_fcs(avg.chi1, avg.chi2);
 
 
@@ -59,5 +72,11 @@ function chi = correct_chi_init(chi_init, F_Kr)
     chi = chi_init./F_Kr;
 end
 
+function [score, col_avg] = score_and_average(X)
+    % Score how well the values in each column agree (Perfect match = 1, larger = worse)
+    % Then average
+    score = min(X, [], 2)./max(X, [], 2);
+    col_avg = mean(X, 2);
+end
 
 end

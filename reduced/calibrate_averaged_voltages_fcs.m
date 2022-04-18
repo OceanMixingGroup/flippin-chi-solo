@@ -1,6 +1,6 @@
 function avg = calibrate_averaged_voltages_fcs(Vavg, head);
 % function avg = calibrate_averaged_voltages_fcs(Vavg, head);
-%   Calculate T1, T2, P, and Wspd from their means over 512-element voltage segments
+%   Calculate T1, T2, P, and Wspd from their means over 'Nseg'-element voltage segments
 %
 %   Inputs
 %   ------

@@ -25,7 +25,7 @@ function [Vpsi_Az, f_Az] = calculate_Psi_Az_fcs(data, fs, head)
     [c1Axp, c1Ayp, c1Azp] = calibrate_C1A_coefs();
     idx_start = find_when_surfaced_and_pointing_down();
     if isempty(idx_start)
-        % Surface record too short, so return dummy vectors of 128 elements
+        % Surface record too short, so return dummy vectors of correct length
         [Vpsi_Az, f_Az] = deal(nan(head.Nfft/2*f_max_out, 1));
     else
         V_Az_wave = calc_V_Az_wave();
@@ -76,7 +76,8 @@ function V_Az_wave = calc_V_Az_wave()
 end
 
 function [Psi_Az, f_Az] = calc_V_Az_spectra()
-    [Psi_Az, f_Az] = pwelch(detrend(V_Az_wave), head.Nfft, 0, head.Nfft, f_subsample);
+    [Psi_Az, f_Az] = pwelch(detrend(V_Az_wave), head.Nfft, ...
+        head.Noverlap, head.Nfft, f_subsample);
     Psi_Az = Psi_Az(f_Az < f_max_out);
     f_Az = f_Az(f_Az < f_max_out);
 end

@@ -3,39 +3,42 @@ function [avg, Vblk] = add_readmes_reduced_fcs(avg, Vblk, head);
 %   Record what's in each struct created by process_cast_reduced_fcs
 
 % To do: ensure readmes are correct
-t_str       = 'time:                 Matlab time\n';
-T_str       = 'T1, T2:               Temperature from two thermistors (degC)\n';
-Ta_str      = 'T:                    Mean of T1, T2 (degC)\n';
-TP_str      = 'T1P, T2P:             Microstructure temperature gradient from two thermistors (degC/m)\n';
-s_str       = 'S1, S2:               Microstructure shear from two shear probes (/s)\n';
-P_str       = 'P:                    Pressure (dbar)\n';
-W_str       = 'Wspd:                 Profiling speed derived from pressure (m/s)\n';
-Wmin_str    = 'Wspd_min:             Minimum Wspd within block (m/s)\n';
-A_str       = 'AX, AY, AZ:           Accelerations (m/s^2)\n';
-nu_str      = 'nu:                   Molecular viscosity (m^2/s)\n';
-DT_str      = 'DT:                   Molecular thermal diffusivity (m^2/s)\n';
-epsinit_str = 'eps_init1, eps_init2: Initial underestimates of eps1 and eps2 (W/kg)\n';
-chiinit_str = 'chi_init1, chi_init2: Initial underestimates of chi1 and chi2 (W/kg)\n';
-eps_str     = 'eps1, eps2:           Turbulent dissipation rate from each shear probe (W/kg)\n';
-F_Na_str    = 'F_Na1, F_Na2          Correction factors for eps1_init and eps2_init\n';
-F_Kr_str    = 'F_Kr1, F_Kr2          Correction factors for chi1_init and chi2_init\n';
-epsa_str    = 'epsilon:              Combined value (see Notes) from eps1, eps2 (W/kg)\n';
-chi_str     = 'chi1, chi2:           Thermal variance dissipation rate from each thermistor (K^2/s)\n';
-chia_str    = 'chi:                  Combined value (see Notes) from chi1, chi2 (K^2/s)\n';
-kend_s_str  = 'k_end1_s, k_end2_s:   Upper limit of integral over shear spectrum (cpm)\n';
-kend_TP_str = 'k_end1_TP, k_end2_TP: Upper limit of integral over Tz spectrum (cpm)\n';
-phi_s_str   = 'S1, S2:               Corrected shear spectra from two shear probes (s^-2/cpm)\n';
-phi_TP_str  = 'T1P, T2P:             Corrected Tz spectra from two thermistors ((K/m)^2/cpm)\n';
-phi_k_str   = 'k:                    Wavenumber (cpm)\n';
-phi_f_str   = 'f:                    Frequency (Hz)\n';
-Phi_eta_str = 'Phi_eta:              Sea surface height spectrum (m^2/Hz)\n';
-SSH_f_str   = 'f:                    Frequency (Hz)\n';
-Hs_str      = 'Hs:                   Significant wave height (m)\n';
+t_str        = 'time:           Matlab time\n';
+T_str        = 'T1, T2:         Temperature from two thermistors (degC)\n';
+Ta_str       = 'T:              Mean of T1, T2 (degC)\n';
+TP_str       = 'T1P, T2P:       Microstructure temperature gradient from two thermistors (degC/m)\n';
+s_str        = 'S1, S2:         Microstructure shear from two shear probes (/s)\n';
+P_str        = 'P:              Pressure (dbar)\n';
+W_str        = 'Wspd:           Profiling speed derived from pressure (m/s)\n';
+Wmin_str     = 'Wspd_min:       Minimum Wspd within block (m/s)\n';
+A_str        = 'AX, AY, AZ:     Accelerations (m/s^2)\n';
+nu_str       = 'nu:             Molecular viscosity (m^2/s)\n';
+DT_str       = 'DT:             Molecular thermal diffusivity (m^2/s)\n';
+epsinit_str  = 'eps_init[1,2]:  Initial underestimates of eps1 and eps2 (W/kg)\n';
+epsscore_str = 'eps[1,2]_score: Quality of spectral fit (see Notes)\n';
+chiinit_str  = 'chi_init[1,2]:  Initial underestimates of chi1 and chi2 (W/kg)\n';
+chiscore_str = 'chi[1,2]_score: Quality of spectral fit (see Notes)\n';
+eps_str      = 'eps[1,2]:       Turbulent dissipation rate from each shear probe (W/kg)\n';
+F_Na_str     = 'F_Na[1,2]:      Correction factors for eps1_init and eps2_init\n';
+F_Kr_str     = 'F_Kr[1,2]:      Correction factors for chi1_init and chi2_init\n';
+epsa_str     = 'epsilon:        Combined value (see Notes) from eps1, eps2 (W/kg)\n';
+chi_str      = 'chi[1,2]:       Thermal variance dissipation rate from each thermistor (K^2/s)\n';
+chia_str     = 'chi:            Combined value (see Notes) from chi1, chi2 (K^2/s)\n';
+kend_s_str   = 'k_end[1,2]_s:   Upper limit of integral over shear spectrum (cpm)\n';
+kend_TP_str  = 'k_end[1,2]_TP:  Upper limit of integral over Tz spectrum (cpm)\n';
+phi_s_str    = 'S1, S2:         Corrected shear spectra from two shear probes (s^-2/cpm)\n';
+phi_TP_str   = 'T1P, T2P:       Corrected Tz spectra from two thermistors ((K/m)^2/cpm)\n';
+phi_k_str    = 'k:              Wavenumber (cpm)\n';
+phi_f_str    = 'f:              Frequency (Hz)\n';
+Phi_eta_str  = 'Phi_eta:        Sea surface height spectrum (m^2/Hz)\n';
+SSH_f_str    = 'f:              Frequency (Hz)\n';
+Hs_str       = 'Hs:             Significant wave height (m)\n';
 
 avg.readme = sprintf([...
-    'Quantities either averaged or derived from ' num2str(head.Nfft) '-element segments for file \n' ...
+    'Quantities either averaged or derived from ' num2str(head.Nseg) '-element segments for file \n' ...
     head.data_filename '\n\n' ...
-    'Each quantity is a Nz x 1 vector where Nz is the number of segments.\n\n' ...
+    'Each quantity is a Nz x 1 vector or Nz x 2 array where Nz is the number of segments.\n' ...
+    'The Nz x 2 arrays arise from there being two fitting ranges.\n\n' ...
     t_str ...
     T_str ...
     Ta_str ...
@@ -47,8 +50,10 @@ avg.readme = sprintf([...
     epsinit_str ...
     F_Na_str ...
     eps_str ...
+    epsscore_str ...
     epsa_str ...
     chiinit_str ...
+    chiscore_str ...
     F_Kr_str ...
     chi_str ...
     chia_str ...
@@ -62,6 +67,7 @@ avg.readme = sprintf([...
     'eps1 and eps2 are combined to give single estimate of epsilon by either taking the mean\n' ...
     'of the two or the smaller of the two if they differ by more than factor of 10.\n' ...
     'And similarly for chi.\n'...
+    'Quality of spectral fit metric is 1 if perfect fit. Lower values mean worse fit.\n' ...
     'SSH spectra are included only if FCS was at the surface for a sufficient length of time.\n' ...
     '\nCreated by the script flippin_chi_solo/full/process_cast_reduced_fcs.m'
     ]);
