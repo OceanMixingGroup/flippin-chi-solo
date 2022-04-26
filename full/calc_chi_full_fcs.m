@@ -28,7 +28,7 @@ function [avg, phi] = calc_chi_full_fcs(phi, avg)
 %
 %   Ken Hughes, July 2021
 
-    k_start = 2;  % calc_chi.m suggests 1--3 Hz, so let's go with 2
+    k_start = 4;
     Nz = size(phi.k, 1);
 
     [avg.chi1, avg.chi2, avg.chi, phi.k_end1_TP, phi.k_end2_TP] = deal(nan(Nz, 1));

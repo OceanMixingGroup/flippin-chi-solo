@@ -26,7 +26,7 @@ function [avg, phi] = calc_epsilon_full_fcs(phi, avg)
 %
 %   Ken Hughes, July 2021
 
-    [k_start, k_stop_min, k_stop_max] = deal(2, 10, 45);
+    [k_start, k_stop_min, k_stop_max] = deal(4, 10, 45);
 
     Nz = size(phi.k, 1);
     [avg.eps1, avg.eps2, avg.epsilon, phi.k_end1_s, phi.k_end2_s] = deal(nan(Nz, 1));
