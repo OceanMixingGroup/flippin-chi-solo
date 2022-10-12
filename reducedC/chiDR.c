@@ -19,11 +19,10 @@ void fitSpectraToPowerLaws(float32_t *vData,
                            uint8_t    numOverlap)
 {
 	//float32_t mNumerator = mNumeratorCalculate(&xSeg[0],&vData[0],numSeg);
-																		/*Calculates the numerator part of the fit equation*/
-  float32_t m = mNumeratorCalculate(&xSeg[0],&vData[0],numSeg)/mDenominator;
-																		/*Calculates the ratio*/
+											/*Calculates the numerator part of the fit equation*/
+  float32_t m = mNumeratorCalculate(&xSeg[0],&vData[0],numSeg)/mDenominator;		/*Calculates the ratio*/
   float32_t b = ((calculate_sum_of_array_f32(&vData[0],numSeg))/numSeg)-(0.5*m);        	
-																		/*calculates b in y = mx +b equation*/
+											/*calculates b in y = mx +b equation*/
   float32_t windowedY[numFreqencies],
 	    testInput[numFreqencies], 
 	    testConj[numSeg],
@@ -37,65 +36,41 @@ void fitSpectraToPowerLaws(float32_t *vData,
 		         &xSeg[0], 
 			 numSeg, m, b);
   
-  uint16_t idxLow[3] = {0, (uint16_t)(numFreqencies/2), numFreqencies}; /* start_inds = [0, N_fft/2, N_fft];*/
+  uint16_t idxLow[3] = {0, (uint16_t)(numFreqencies/2), numFreqencies}; 		/* start_inds = [0, N_fft/2, N_fft];*/
 
-  arm_fill_f32(0,&psdBuf[0],numFreqencies); 				/*prefill local variables with zero*/
+  arm_fill_f32(0,&psdBuf[0],numFreqencies); 						/*prefill local variables with zero*/
   arm_fill_f32(0,&testConj[0],numSeg);
   arm_fill_f32(0,&fftOutput[0],numSeg);
   arm_fill_f32(0,&windowedY[0],numFreqencies);
 
   
   for (uint8_t ii = 0; ii < 3; ii++)
-  {                                                               		/*calculate running sum of 3 psds in the loop*/  
-      arm_rfft_fast_instance_f32 rfft_inst;                       		/*Initialize ARM CMSIS FFT Instance*/
+  {                                                               			/*calculate running sum of 3 psds in the loop*/  
+      arm_rfft_fast_instance_f32 rfft_inst;                       			/*Initialize ARM CMSIS FFT Instance*/
       
-      arm_rfft_fast_init_f32(&rfft_inst, numFreqencies);                /*Process the data through the CFFT/CIFFT module */
+      arm_rfft_fast_init_f32(&rfft_inst, numFreqencies);                		/*Process the data through the CFFT/CIFFT module */
      
-	  arm_fill_f32(0,&testInput[0],numFreqencies);                      /*Pre-fill array with zeros */
+      arm_fill_f32(0,&testInput[0],numFreqencies);                      		/*Pre-fill array with zeros */
       
-	  arm_copy_f32(&vData[idxLow[ii]],
-				   &testInput[0],
-				   numFreqencies);       								/*Copy data to buffer*/
+      arm_copy_f32(&vData[idxLow[ii]], &testInput[0], numFreqencies); 			/*Copy data to buffer*/
       
-	  arm_mult_f32(&testInput[0],
-				   &hammWind[0],
-				   &testInput[0],
-				   numFreqencies);  									/*Apply Hamming window to the signal*/ 
+      arm_mult_f32(&testInput[0], &hammWind[0], &testInput[0], numFreqencies);		/*Apply Hamming window to the signal*/ 
       
-	  arm_rfft_fast_f32(&rfft_inst,
-			    &testInput[0],
-			    &fftOutput[0], 0); 								/*compute Fast FFT and store result in fftOutput array*/
+      arm_rfft_fast_f32(&rfft_inst, &testInput[0], &fftOutput[0], 0);   		/*compute Fast FFT and store result in fftOutput array*/
       
-	  arm_cmplx_conj_f32(&fftOutput[0],
-			     &testConj[0],
-			     numFreqencies);        						/*calculate complex conjugate of fftOutput and 
-																		store in testConj array*/
-      
-	  arm_cmplx_mult_cmplx_f32(&fftOutput[0],
-				   &testConj[0],
-				   &fftOutput[0],
-				   numFreqencies); 							/*complex to complex number array multiplication 
-																		(multiply complex with conj) store in testBuffer*/
-      arm_cmplx_mag_f32(&fftOutput[0], 
-			&testInput[0], 
-			numFreqencies);      							/* magnitude of testBuffer and store it in testInput. 
-																		This may not be required*/
-      
-	  arm_add_f32(&psdBuf[0],
-		      &testInput[0],
-		      &psdBuf[0],
-		      numFreqencies);      									/*Increment psdSum array in the loop. */
+      arm_cmplx_conj_f32(&fftOutput[0], &testConj[0], numFreqencies);			/*calculate complex conjugate of fftOutput and 
+									      		store in testConj array*/
+      arm_cmplx_mult_cmplx_f32(&fftOutput[0], &testConj[0], &fftOutput[0], numFreqencies);
+	  										/*complex to complex number array multiplication 
+											(multiply complex with conj) store in testBuffer*/
+      arm_cmplx_mag_f32(&fftOutput[0], &testInput[0], numFreqencies);			/* magnitude of testBuffer and store it in testInput. 
+											This may not be required*/
+      arm_add_f32(&psdBuf[0], &testInput[0], &psdBuf[0], numFreqencies);		/*Increment psdSum array in the loop. */
   }
 
-  removeFreqBeyondNyquist(&psdBuf[0],
-			  &psdSum[0],
-			  1+(numFreqencies/2));  						/*Remove frequencies beyond Nyquist 
-			    							(sometimes considered the negative frequencies)*/
-  scalePsdCorrected(&psdSum[0],
-		    numSubSeg, 
-		    normFactor,
-		    1+(numFreqencies/2),
-		    fs);     							/* Scale PSD corrected i.e Normalization*/    
+  removeFreqBeyondNyquist(&psdBuf[0], &psdSum[0], 1+(numFreqencies/2));			/*Remove frequencies beyond Nyquist 
+			    								(sometimes considered the negative frequencies)*/
+  scalePsdCorrected(&psdSum[0], numSubSeg, normFactor, 1+(numFreqencies/2), fs); 	/* Scale PSD corrected i.e Normalization*/    
 }
 
 /*****************************************************************************************/
@@ -108,13 +83,13 @@ void generateHammingWindow(float32_t *pDst, uint16_t blockSize)
  * @param[in]       blockSize number of samples in each vector        
  * @return none.        
  */
-  uint16_t blkCnt = 0;                     								/*Set Loop Counter to Zero*/
+  uint16_t blkCnt = 0;                 							/*Set Loop Counter to Zero*/
   /*Since half of windowed output is mirror image of other half, we compute for half to save processing time*/
   while(blkCnt < blockSize/2)              
   {
     *(pDst+blkCnt) = 0.54 - (0.46 * arm_cos_f32(2 * PI * blkCnt / ((float32_t)(blockSize - 1))));
     *(pDst+blockSize - (blkCnt+1)) = *(pDst+blkCnt); 					/*Copy the first half to the last half*/
-    blkCnt++;                             								/*Increment the counter*/
+    blkCnt++;                             						/*Increment the counter*/
   }
 }
 
@@ -131,13 +106,13 @@ float32_t calculateNormFactorWindow(float32_t *pSrc, uint16_t blockSize)
  * window_norm = sum(wind.^2);
    norm_factor = 2/window_norm  % = 0.01973488 for N_fft = 256
  */
-  float32_t normFactor = 0.0f;                    				/* Function output .. Norm Factor */
-  float32_t sumOfSquares = 0.0f;                 				/* Sum of Squares */
+  float32_t normFactor = 0.0f;                    					/* Function output .. Norm Factor */
+  float32_t sumOfSquares = 0.0f;                 					/* Sum of Squares */
   arm_dot_prod_f32(&pSrc[0],&pSrc[0],blockSize,&sumOfSquares);   
   normFactor = 2/sumOfSquares;  
-																/*window_norm = sum(wind.^2);
-																norm_factor = 2/window_norm = 0.01973488 
-																for N_fft = 256*/
+											/*window_norm = sum(wind.^2);
+											norm_factor = 2/window_norm = 0.01973488 
+											for N_fft = 256*/
   return(normFactor);
 }
 
@@ -152,7 +127,7 @@ float32_t mDenominatorCalculate(float32_t blockSize)
  * @param[in]       blockSize number of samples in each vector        
  * @return mDenom.        
  */
-  float32_t mDenom = blockSize*((blockSize*blockSize) -1)/6;;  //output value
+  float32_t mDenom = blockSize*((blockSize*blockSize) -1)/6;;  				/*output value*/
   return(mDenom);
 }
 
@@ -171,9 +146,8 @@ float32_t mNumeratorCalculate(float32_t *pSrcA, float32_t *pSrcB, uint16_t block
  */
   float32_t mNumerator = 0;
   float32_t dotProduct = {0};
-  arm_dot_prod_f32(&pSrcA[0],&pSrcB[0],blockSize,&dotProduct);   	/* sum(x.*y) */
-  mNumerator = (2*dotProduct) - calculate_sum_of_array_f32(&pSrcB[0],blockSize); 
-																	/* mNumerator = 2*sum(x.*y) -  sum(y) */
+  arm_dot_prod_f32(&pSrcA[0],&pSrcB[0],blockSize,&dotProduct);   			/* sum(x.*y) */
+  mNumerator = (2*dotProduct) - calculate_sum_of_array_f32(&pSrcB[0],blockSize);	/* mNumerator = 2*sum(x.*y) -  sum(y) */
   return (mNumerator);
 }
 
@@ -188,13 +162,13 @@ Adaptation of existing arm CMSIS code for calculating sum of elements in an arra
 */
 
 {
-  float32_t sum = 0.0f;                          /* Temporary result storage */
-  uint32_t blkCnt;                               /* loop counter */
+  float32_t sum = 0.0f;                          					/* Temporary result storage */
+  uint32_t blkCnt;                               					/* loop counter */
 
-  /* Run the below code for Cortex-M4 and Cortex-M3 */
+  											/* Run the below code for Cortex-M4 and Cortex-M3 */
   float32_t in1, in2, in3, in4;
 
-  /*loop Unrolling for faster processing*/
+  											/*loop Unrolling for faster processing*/
   blkCnt = blockSize >> 2u;
 
   /* First part of the processing with loop unrolling.  Compute 4 outputs at a time.    
