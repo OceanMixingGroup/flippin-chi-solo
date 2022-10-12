@@ -1,6 +1,8 @@
 # Flippin' Chi Solo (FCS) processing code
 
-Ken Hughes, April 2022
+Matlab prototype: Ken Hughes, April 2022
+
+C firmware implementation: Pavan Vutukur, October 2022 
 
 For full details, see 
 
