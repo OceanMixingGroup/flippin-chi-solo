@@ -142,7 +142,7 @@ void numSegmentsCompute(uint16_t 	*pSrc,
 
 void diffCompute(float32_t 	*pSrcA, 
                  float32_t 	*pDst,
-                 uint16_t   blockSize,
+                 uint16_t   	blockSize,
                  uint16_t  	*pSrcB);
 
 void despikeShearSegment(float32_t 	*pSrc,
