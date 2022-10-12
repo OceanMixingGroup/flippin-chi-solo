@@ -81,21 +81,21 @@ void fitSpectraToPowerLaws(float32_t 	*vData,
                            uint8_t    	numOverlap);
 
 
-void generateHammingWindow(float32_t 	*pDst, 
-						   uint16_t 	blockSize);
+void generateHammingWindow(float32_t	*pDst, 
+		           uint16_t 	blockSize);
 
 
 float32_t calculateNormFactorWindow(float32_t 	*pSrc, 
-									uint16_t 	blockSize);
+				    uint16_t 	blockSize);
 								
 float32_t mDenominatorCalculate(float32_t blockSize);
 
-float32_t mNumeratorCalculate(float32_t 	*pSrcA, 
-							   float32_t 	*pSrcB, 
-							   uint16_t 	blockSize);
+float32_t mNumeratorCalculate(float32_t		*pSrcA, 
+			      float32_t 	*pSrcB, 
+			      uint16_t 		blockSize);
 
-float32_t calculate_sum_of_array_f32(float32_t 	*pSrc, 
-									 uint32_t 	blockSize);
+float32_t calculate_sum_of_array_f32(float32_t 	*pSrc,
+				     uint32_t 	blockSize);
 
 void calculateLineOfBestFit(float32_t	*pSrcA, 
                             float32_t 	*pSrcB, 
@@ -107,9 +107,9 @@ void generateEvenSpacedNum(int16_t   	blkCnt_LOW,
                            uint16_t  	blockSize,
                            float32_t   	*pDst);
 
-void removeFreqBeyondNyquist(float32_t		*pSrc, 
-							 float32_t 		*pDst, 
-							 uint16_t 		blockSize);
+void removeFreqBeyondNyquist(float32_t		*pSrc,
+			     float32_t 		*pDst,
+			     uint16_t 		blockSize);
 
 void scalePsdCorrected(float32_t		*pSrc, 
                        uint16_t 		numSubSeg, 
@@ -117,36 +117,36 @@ void scalePsdCorrected(float32_t		*pSrc,
                        uint16_t 		blockSize, 
                        uint8_t 			fSampling);
 
-void fidxCompute(float32_t	*pSrc, 
-				 bool 		*pDst,
-				 uint16_t 	f1, 
-				 uint16_t 	f2, 
-				 uint16_t 	blockSize);
+void fidxCompute(float32_t	*pSrc,
+		 bool 		*pDst,
+		 uint16_t 	f1, 
+		 uint16_t 	f2, 
+		 uint16_t 	blockSize);
 					
-float32_t psiShearFit(float32_t		*pSrcA, 
-					  bool 			*pSrcB, 
-					  float32_t 	*pSrcC, 
-					  uint16_t 		blockSize);
+float32_t psiShearFit(float32_t		*pSrcA,
+		      bool		*pSrcB,
+		      float32_t 	*pSrcC,
+		      uint16_t 		blockSize);
 
 float32_t fitPsiTP(float32_t 		*pSrcA, 
-                   bool 	   		*pSrcB, 
+                   bool 	   	*pSrcB, 
                    float32_t 		*pSrcC, 
                    uint16_t 		blockSize);
 					 
-void fallSpdCompute(float32_t 		*pSrc, 
-					uint16_t 		blockSize, 
-					float32_t 		*pDst);
+void fallSpdCompute(float32_t 		*pSrc,
+		    uint16_t 		blockSize,
+		    float32_t 		*pDst);
 
-void numSegmentsCompute(uint16_t 	*pSrc, 
-						uint16_t 	blockSize);
+void numSegmentsCompute(uint16_t 	*pSrc,
+			uint16_t 	blockSize);
 
 void diffCompute(float32_t 	*pSrcA, 
                  float32_t 	*pDst,
                  uint16_t   blockSize,
                  uint16_t  	*pSrcB);
 
-void despikeShearSegment(float32_t 	*pSrc, 
-						 uint16_t 	blockSize);
+void despikeShearSegment(float32_t 	*pSrc,
+			 uint16_t 	blockSize);
 						   
 void defineFreqFiltRanges(uint16_t   fs,
                           uint16_t   blockSize,
