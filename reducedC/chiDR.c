@@ -25,21 +25,21 @@ void fitSpectraToPowerLaws(float32_t *vData,
   float32_t b = ((calculate_sum_of_array_f32(&vData[0],numSeg))/numSeg)-(0.5*m);        	
 																		/*calculates b in y = mx +b equation*/
   float32_t windowedY[numFreqencies],
-			testInput[numFreqencies], 
-			testConj[numSeg],
-			fftOutput[numSeg],
-			psdBuf[numFreqencies]; 										/*Local variables*/
+	    testInput[numFreqencies], 
+	    testConj[numSeg],
+	    fftOutput[numSeg],
+	    psdBuf[numFreqencies]; 							/*Local variables*/
   
   uint16_t numSubSeg = (2*numSeg/numFreqencies) - 1;  					/*Number of half-overlapping segments 
-																		(=3 for N_seg=512, N_fft=256)*/
+											(=3 for N_seg=512, N_fft=256)*/
   
   calculateLineOfBestFit(&vData[0], 
-						 &xSeg[0], 
-						 numSeg, m, b);
+		         &xSeg[0], 
+			 numSeg, m, b);
   
   uint16_t idxLow[3] = {0, (uint16_t)(numFreqencies/2), numFreqencies}; /* start_inds = [0, N_fft/2, N_fft];*/
 
-  arm_fill_f32(0,&psdBuf[0],numFreqencies); 							/*prefill local variables with zero*/
+  arm_fill_f32(0,&psdBuf[0],numFreqencies); 				/*prefill local variables with zero*/
   arm_fill_f32(0,&testConj[0],numSeg);
   arm_fill_f32(0,&fftOutput[0],numSeg);
   arm_fill_f32(0,&windowedY[0],numFreqencies);
@@ -49,8 +49,8 @@ void fitSpectraToPowerLaws(float32_t *vData,
   {                                                               		/*calculate running sum of 3 psds in the loop*/  
       arm_rfft_fast_instance_f32 rfft_inst;                       		/*Initialize ARM CMSIS FFT Instance*/
       
-	  arm_rfft_fast_init_f32(&rfft_inst, numFreqencies);                /*Process the data through the CFFT/CIFFT module */
-      
+      arm_rfft_fast_init_f32(&rfft_inst, numFreqencies);                /*Process the data through the CFFT/CIFFT module */
+     
 	  arm_fill_f32(0,&testInput[0],numFreqencies);                      /*Pre-fill array with zeros */
       
 	  arm_copy_f32(&vData[idxLow[ii]],
