@@ -63,39 +63,39 @@ void fitSpectraToPowerLaws(float32_t *vData,
 				   numFreqencies);  									/*Apply Hamming window to the signal*/ 
       
 	  arm_rfft_fast_f32(&rfft_inst,
-						&testInput[0],
-						&fftOutput[0], 0); 								/*compute Fast FFT and store result in fftOutput array*/
+			    &testInput[0],
+			    &fftOutput[0], 0); 								/*compute Fast FFT and store result in fftOutput array*/
       
 	  arm_cmplx_conj_f32(&fftOutput[0],
-						 &testConj[0],
-						 numFreqencies);        						/*calculate complex conjugate of fftOutput and 
+			     &testConj[0],
+			     numFreqencies);        						/*calculate complex conjugate of fftOutput and 
 																		store in testConj array*/
       
 	  arm_cmplx_mult_cmplx_f32(&fftOutput[0],
-							   &testConj[0],
-							   &fftOutput[0],
-							   numFreqencies); 							/*complex to complex number array multiplication 
+				   &testConj[0],
+				   &fftOutput[0],
+				   numFreqencies); 							/*complex to complex number array multiplication 
 																		(multiply complex with conj) store in testBuffer*/
       arm_cmplx_mag_f32(&fftOutput[0], 
-						&testInput[0], 
-						numFreqencies);      							/* magnitude of testBuffer and store it in testInput. 
+			&testInput[0], 
+			numFreqencies);      							/* magnitude of testBuffer and store it in testInput. 
 																		This may not be required*/
       
 	  arm_add_f32(&psdBuf[0],
-				  &testInput[0],
-				  &psdBuf[0],
-				  numFreqencies);      									/*Increment psdSum array in the loop. */
+		      &testInput[0],
+		      &psdBuf[0],
+		      numFreqencies);      									/*Increment psdSum array in the loop. */
   }
 
   removeFreqBeyondNyquist(&psdBuf[0],
-						  &psdSum[0],
-						  1+(numFreqencies/2));  						/*Remove frequencies beyond Nyquist 
-																		(sometimes considered the negative frequencies)*/
+			  &psdSum[0],
+			  1+(numFreqencies/2));  						/*Remove frequencies beyond Nyquist 
+			    							(sometimes considered the negative frequencies)*/
   scalePsdCorrected(&psdSum[0],
-					numSubSeg, 
-					normFactor,
-					1+(numFreqencies/2),
-					fs);     											/* Scale PSD corrected i.e Normalization*/    
+		    numSubSeg, 
+		    normFactor,
+		    1+(numFreqencies/2),
+		    fs);     							/* Scale PSD corrected i.e Normalization*/    
 }
 
 /*****************************************************************************************/
