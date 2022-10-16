@@ -221,8 +221,8 @@ void calculateLineOfBestFit(float32_t 	*pSrcA,
 
 /*****************************************************************************************/
 void generateEvenSpacedNum(int16_t   	blkCnt_LOW,
-                              uint16_t  	blockSize,
-                              float32_t   	*pDst)
+                           uint16_t  	blockSize,
+                           float32_t   	*pDst)
 {
  /* 
  * @brief Generates even spaced numbers      
@@ -244,7 +244,9 @@ void generateEvenSpacedNum(int16_t   	blkCnt_LOW,
 
 
 /*****************************************************************************************/
-void removeFreqBeyondNyquist(float32_t *pSrc, float32_t *pDst, uint16_t blockSize)
+void removeFreqBeyondNyquist(float32_t *pSrc, 
+			     float32_t *pDst, 
+			     uint16_t blockSize)
 {
 /* 
  * @brief Remove frequencies beyond Nyquist (sometimes considered the negative frequencies)  
@@ -264,10 +266,10 @@ void removeFreqBeyondNyquist(float32_t *pSrc, float32_t *pDst, uint16_t blockSiz
 
 /*****************************************************************************************/
 void scalePsdCorrected(float32_t *pSrc, 
-                         uint16_t numSubSeg, 
-                         float32_t normFactor, 
-                         uint16_t blockSize, 
-                         uint8_t fSampling)
+                       uint16_t numSubSeg, 
+                       float32_t normFactor, 
+                       uint16_t blockSize, 
+                       uint8_t fSampling)
 {
   uint16_t blkCnt = 0;
   float32_t corrFactor = normFactor/((float32_t)(fSampling*numSubSeg));
@@ -282,7 +284,11 @@ void scalePsdCorrected(float32_t *pSrc,
 }
 
 /*****************************************************************************************/
-void fidxCompute(float32_t *pSrc, bool *pDst,uint16_t f1, uint16_t f2, uint16_t blockSize)
+void fidxCompute(float32_t *pSrc,
+		 bool *pDst,
+		 uint16_t f1,
+		 uint16_t f2,
+		 uint16_t blockSize)
 {
   uint16_t blkCnt = 0;
   while (blkCnt < blockSize)
@@ -321,7 +327,10 @@ float32_t psiShearFit(float32_t *pSrcA, bool *pSrcB, float32_t *pSrcC, uint16_t 
 }
 /*****************************************************************************************/
 
-float32_t fitPsiTP(float32_t *pSrcA, bool *pSrcB, float32_t *pSrcC, uint16_t blockSize)
+float32_t fitPsiTP(float32_t 	*pSrcA,
+		   bool 	*pSrcB,
+		   float32_t 	*pSrcC,
+		   uint16_t 	blockSize)
 {
   uint16_t 	blkCnt = 0;
   float32_t psiFit = 0;
@@ -341,7 +350,9 @@ float32_t fitPsiTP(float32_t *pSrcA, bool *pSrcB, float32_t *pSrcC, uint16_t blo
 }
 
 /*****************************************************************************************/
-void fallSpdCompute(float32_t *pSrc, uint16_t blockSize, float32_t *pDst)
+void fallSpdCompute(float32_t *pSrc,
+		    uint16_t  blockSize,
+		    float32_t *pDst)
 {
 /*
 * @brief Difference of start and end pressure and divide by sample size and sampling rate gives fall speed
