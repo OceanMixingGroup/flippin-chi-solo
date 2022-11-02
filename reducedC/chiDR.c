@@ -363,9 +363,12 @@ void fallSpdCompute(float32_t *pSrc,
 /*****************************************************************************************/
 
 void numSegmentsCompute(uint16_t *pSrc, uint16_t blockSize)
-{
+{/*
+*pSrc N_seg[11] array {0, 50, 100 .... 500}
+blocksize = 11
+*/
   uint16_t blkCnt = 0;
-
+  
   while (blkCnt < blockSize)
   {
     *(pSrc+blkCnt) =  blkCnt*50;
@@ -380,7 +383,12 @@ void diffCompute(float32_t *pSrcA,
                   float32_t *pDst,
                   uint16_t   blockSize,
                   uint16_t  *pSrcB)
-{
+{/*
+    *pSrcA pressure raw signal
+	*pSrcB N_seg[11] array {0, 50, 100 .... 500}
+	*pDst diff_pressure array[10]
+	*blocksize = 11
+ */
   uint16_t blkCnt = 0;
   while (blkCnt < (blockSize-1))
   {
