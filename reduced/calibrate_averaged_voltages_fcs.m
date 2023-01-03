@@ -5,7 +5,7 @@ function avg = calibrate_averaged_voltages_fcs(Vavg, head);
 %   Inputs
 %   ------
 %   Vavg: voltage means calculated on-board
-%         or output of mean_of_T_P_voltages if simulating on-board processing with Matlab
+%         or output of calc_T_P_voltage_quantities if simulating on-board processing with Matlab
 %   head: output of load_and_modify_header
 %
 %   Output

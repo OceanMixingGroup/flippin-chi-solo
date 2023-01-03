@@ -7,7 +7,7 @@ function avg = derive_epsilon_and_chi_reduced(Vpsi, Vavg, avg, head, fbounds)
 %   Vpsi: struct with the two power-law fits of voltage spectra calculated on-board
 %         or output of fit_spectra_to_power_laws_fcs if simulating on-board processing with Matlab
 %   Vavg: voltage means calculated on-board
-%         or output of mean_of_T_P_voltages if simulating on-board processing with Matlab
+%         or output of calc_T_P_voltage_quantities if simulating on-board processing with Matlab
 %   avg: struct of calibrated data where each quantity is Nz x 1
 %   head: output of load_and_modify_header
 %   fbounds: four-element vector; second output of define_freq_fit_ranges_fcs
@@ -28,8 +28,8 @@ function avg = derive_epsilon_and_chi_reduced(Vpsi, Vavg, avg, head, fbounds)
         avg.eps1(:, ii) = correct_eps_init(avg.eps_init1(:, ii), avg.F_Na1(:, ii));
         avg.eps2(:, ii) = correct_eps_init(avg.eps_init2(:, ii), avg.F_Na2(:, ii));
     end
-    [avg.eps1_score, avg.eps1] = score_and_average(avg.eps1);
-    [avg.eps2_score, avg.eps2] = score_and_average(avg.eps2);
+    [avg.eps1_score, avg.eps1] = score_and_combine_eps(avg.eps1, avg);
+    [avg.eps2_score, avg.eps2] = score_and_combine_eps(avg.eps2, avg);
     avg.epsilon = combine_turbulence_values_fcs(avg.eps1, avg.eps2);
 
     for ii = 1:2
@@ -46,8 +46,8 @@ function avg = derive_epsilon_and_chi_reduced(Vpsi, Vavg, avg, head, fbounds)
         avg.chi1(:, ii) = correct_chi_init(avg.chi_init1(:, ii), avg.F_Kr1(:, ii));
         avg.chi2(:, ii) = correct_chi_init(avg.chi_init2(:, ii), avg.F_Kr2(:, ii));
     end
-    [avg.chi1_score, avg.chi1] = score_and_average(avg.chi1);
-    [avg.chi2_score, avg.chi2] = score_and_average(avg.chi2);
+    [avg.chi1_score, avg.chi1] = score_and_combine_chi(avg.chi1, avg);
+    [avg.chi2_score, avg.chi2] = score_and_combine_chi(avg.chi2, avg);
     avg.chi = combine_turbulence_values_fcs(avg.chi1, avg.chi2);
 
 
@@ -72,11 +72,25 @@ function chi = correct_chi_init(chi_init, F_Kr)
     chi = chi_init./F_Kr;
 end
 
-function [score, col_avg] = score_and_average(X)
+function [score, col_comb] = score_and_combine_eps(X, avg)
     % Score how well the values in each column agree (Perfect match = 1, larger = worse)
-    % Then average
     score = min(X, [], 2)./max(X, [], 2);
-    col_avg = mean(X, 2);
+    % Then either
+    % (1) average or
+    % (2) use the lower-freq fit if 0.1*k*eta < f_m = 3 Hz where eta = (nu^3/eps)^(1/4)
+    %     (that is, if the 3-5 Hz fit is likely extending into the noise)
+    % If 2, then score no longer valid
+    col_comb = mean(X, 2);
+    use_lower_freq_fit = 0.1*avg.Wspd.*X(:, 1).^0.25./avg.nu.^0.75 < fbounds(2);
+    col_comb(use_lower_freq_fit) = X(use_lower_freq_fit, 1);
+    % score(use_lower_freq_fit) = NaN;
+end
+
+function [score, col_comb] = score_and_combine_chi(X, avg)
+    % Score how well the values in each column agree (Perfect match = 1, larger = worse)
+    % Then average. Assume that noise is not an issue as it is with epsilon above.
+    score = min(X, [], 2)./max(X, [], 2);
+    col_comb = mean(X, 2);
 end
 
 end
