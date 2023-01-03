@@ -1,6 +1,7 @@
 function H2f = thermal_response_transfer_function_fcs(f)
 % function H2f = thermal_response_transfer_function_fcs(f)
-%   Transfer function describing Tprime variance lost at high frequencies to
+%   Transfer function describing Tprime variance lost at high frequencies by
+%   diffusion of heat through the thermistor bead's coating
 %
 %   Inputs
 %   ------
@@ -12,22 +13,18 @@ function H2f = thermal_response_transfer_function_fcs(f)
 %
 %   References
 %   ----------
-%   Sommer et al. (2013) J. Atmos. Oceanic Tech.
-%   doi: 10.1175/JTECH-D-12-00272.1
+%   Nash et al. (1999) J. Atmos. Oceanic Tech.
+%   doi:10.1175/1520-0426(1999)016<1474:ATPFHS>2.0.CO;2
 %
-%   Eqs 2, 3 of Lien et al. (2016) Methods Oceanogr.
-%   doi: 10.1016/j.mio.2016.09.003
-%   Ken Hughes, July 2021
+%   Ken Hughes, Dec 2022
 
+%   Figure A2 of Nash et al. shows measured transfer functions for profiling speed of 0.3 m/s
+%   For a double-pole filter response, two different thermistors have optimal
+%   cut-off frequencies of fc = 25.1 and 36.7 Hz
+%   Use approximate mean of these two values
+%   The use of one significant (30, not 30.9) recognizes the uncertainty in fc
 
-    % Below is the more general form. Since s = 0, it simplifies to tau = 0.01
-    % assert(length(W) == 1, 'W is not a single value')
-    % [s, tau0, U0] = deal(0, 0.01, 1); % Sommer et al. choice quoted in Lien et al.
-    % tau = tau0*(W/U0).^s;
+    fc = 30;
+    H2f = 1./((1 + (f/fc).^2)).^2;
 
-    tau = 0.01;
-
-    H2f = 1./((1 + (2*pi*f*tau).^2).^2);
-    % Don't trust more than factor of 20 correction (somewhat arbitrary)
-    H2f(H2f < 1/20) = NaN;
 end

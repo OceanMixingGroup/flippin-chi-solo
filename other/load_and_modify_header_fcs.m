@@ -77,9 +77,9 @@ switch unit_number
             head.coef.S1(1) = 0.2781;
         end
         % It appears, however, that S1 is bad throughout the whole experiment
-        % Setting sensitivity to zero so that epsilon1 will equal 0
+        % Setting sensitivity to Inf so that S1 and epsilon1 will equal 0
         % Leaving earlier calibration for reference
-        head.coef.S1(1) = 0;
+        head.coef.S1(1) = Inf;
 
         head.sensor_id{S2_id} = '12-09';
         head.coef.S2(1) = 0.3434;
