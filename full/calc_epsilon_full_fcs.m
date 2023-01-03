@@ -44,7 +44,9 @@ function [epsilon, k_end] = iterate_to_eps(phi_s, k, nu, Wspd)
     % k_start to k_stop
 
     % First deal with case where spectra are NaNs because pump was running
-    if all(isnan(phi_s))
+    % Or bad shear sensor
+    % (phi.S1 = 0 if head.coef.S1 = Inf in load_and_modify_header)
+    if all(isnan(phi_s) | phi_s == 0)
         [epsilon, k_end] = deal(NaN);
         return
     end
