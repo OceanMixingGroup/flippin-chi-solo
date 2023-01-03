@@ -25,7 +25,7 @@ function [avg, Vblk] = process_cast_reduced_fcs(header_dir, unit_number, data_fi
     [~, isUP] = parse_filename_fcs(data_filename);
     data = raw_load_solo(data_filename);
     Vblk = reshape_to_Nseg_blocks_fcs(data, Nseg, head, 'voltages');
-    Vavg = mean_of_T_P_voltages(Vblk, head);
+    Vavg = calc_T_P_voltage_quantities(Vblk, head);
     [Vavg, Vblk] = remove_nonprofiling_data_fcs(Vavg, Vblk, head, 'voltages');
     Vblk = despike_shear_blocks_fcs(Vblk);
     Vpsi = fit_spectra_to_power_laws_fcs(Vblk, f, fbounds, fs, Nseg, Nfft, Noverlap);
@@ -44,6 +44,6 @@ function [avg, Vblk] = process_cast_reduced_fcs(header_dir, unit_number, data_fi
         avg.SSH = convert_wave_acceleration_to_SSH_spectrum(Vpsi_Az, f_Az, head);
     end
 
-    avg = add_readmes_reduced_fcs(avg, Vblk, head);
+    [avg, Vblk] = add_readmes_reduced_fcs(avg, Vblk, head);
 
 end

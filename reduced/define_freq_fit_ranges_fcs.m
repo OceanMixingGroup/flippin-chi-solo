@@ -21,5 +21,11 @@ function [f, fbounds] = define_freq_fit_ranges_fcs(fs, Nfft)
     % The frequency vector associated with Nfft
     f = linspace(0, fs/2, Nf);
 
-    fbounds = [1, 3, 3, 5];
+    % fbounds should be approximately [1, 3, 3, 5] in Hz;
+    % but should also have values that are half-integer mutliples of diff(fs)
+    approx_bounds = [1, 3, 3, 5];
+    for ii = 1:4
+        idx = find(f < approx_bounds(ii), 1, 'last');
+        fbounds(ii) = mean(f(idx:idx+1));
+    end
 end

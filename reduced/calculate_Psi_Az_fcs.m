@@ -64,7 +64,10 @@ function idx_start = find_when_surfaced_and_pointing_down()
 
     % Ensure that 256 seconds later (plus a 15s buffer), the pressure hasn't changed
     % by more than 3dbar (i.e., the dive has yet to begin).
-    if P_approx(idx_start + (N_seconds+15)*fs) > P_approx(idx_start) + 3;
+    idx_end = idx_start + (N_seconds+15)*fs;
+    if idx_end > length(P_approx)
+        idx_start = [];
+    elseif P_approx(idx_end) > P_approx(idx_start) + 3;
         idx_start = [];
     end
 end

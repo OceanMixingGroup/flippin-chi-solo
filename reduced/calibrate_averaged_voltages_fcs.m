@@ -17,7 +17,7 @@ function avg = calibrate_averaged_voltages_fcs(Vavg, head);
     avg.T1 = calibrate_temperature(c.T1, Vavg.T1);
     avg.T2 = calibrate_temperature(c.T2, Vavg.T2);
     avg.T = average_temperatures(avg.T1, avg.T2);
-    avg.P = calibrate_pressure(c.P, Vavg.P);
+    avg.P = calibrate_pressure(c.P, Vavg.P_end);
     avg.Wspd = calibrate_Wspd(c.P, Vavg.Wspd);
     avg.Wspd_min = calibrate_Wspd(c.P, Vavg.Wspd_min);
 
@@ -30,10 +30,16 @@ function T = calibrate_temperature(cT, VT)
     T = cT(1) + cT(2)*VT + cT(3)*VT.^2;
 end
 
-function P = calibrate_pressure(cP, VP)
+function P = calibrate_pressure(cP, VP_end)
     psi_to_dbar = 1/1.45;
     p_atm = 10.1325;
-    P = (cP(1) + cP(2)*VP)*psi_to_dbar - p_atm;
+    P_end = (cP(1) + cP(2)*VP_end)*psi_to_dbar - p_atm;
+
+    % We recorded pressure at the end of the segment, but we really
+    % want it at the mid-point
+    P = nan(size(P_end));
+    P(2:end) = 0.5*(P_end(1:end-1) + P_end(2:end));
+    P(1) = P(2) - diff(P_end(1:2));
 end
 
 function T = average_temperatures(T1, T2)
