@@ -50,7 +50,7 @@ function [c1Axp, c1Ayp, c1Azp] = calibrate_C1A_coefs()
 
     % c1Azp in not described in the paper, but it follows the same logic as
     % c1Axp and c1Ayp, except that the mean is +g, not zero.
-    c1Azp = 1 - c2Ap*mean(data.AY(near_bottom));
+    c1Azp = 1 - c2Ap*mean(data.AZ(near_bottom));
 end
 
 function idx_start = find_when_surfaced_and_pointing_down()
