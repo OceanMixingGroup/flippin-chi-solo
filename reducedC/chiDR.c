@@ -405,14 +405,16 @@ void despikeShearSegment(float32_t *pSrc, uint16_t blockSize)
 {
 	//C version of MATLAB function blk = despike_shear_blocks_fcs(blk)
   float32_t xMean,
+			xVar,
 			xDespikeMean,
 			xStd;
   float32_t xSum = 0;
   bool 		xSpikes[blockSize];
   uint16_t 	blkCnt = 0;
   uint16_t 	spikeCnt = 0; 
-  arm_mean_f32(&(*pSrc),blockSize,&xMean);   //Mean of S1 
-  arm_std_f32(&(*pSrc),blockSize,&xStd);    // Standard Deviation of S1
+  arm_mean_f32(&(*pSrc),blockSize,&xMean);   //Mean of pSrc array
+  arm_var_f32(&(*pSrc),blockSize,&xVar);     // Variance of pSrc array
+  xStd = sqrtf(xVar);					    //Calculate standard deviation from variance
   while (blkCnt < blockSize)				//Keep track of #spikes in each blkCnt iteration
   {
      if (fabs(*(pSrc+blkCnt)-xMean) > (3*xStd))
@@ -440,6 +442,7 @@ void despikeShearSegment(float32_t *pSrc, uint16_t blockSize)
     blkCnt++;                               //increment the counter till all the buffer is read
   }
 }
+
 
 /*****************************************************************************************/
 
