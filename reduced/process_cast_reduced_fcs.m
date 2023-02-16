@@ -1,4 +1,4 @@
-function [avg, Vblk] = process_cast_reduced_fcs(header_dir, unit_number, data_filename)
+function [avg, Vblk, Vpsi, Vavg] = process_cast_reduced_fcs(header_dir, unit_number, data_filename)
 % function process_cast_reduced_fcs(header_dir, unit_number, data_filename)
 %   Process a single FCS cast with the data reduction method
 %
@@ -12,6 +12,8 @@ function [avg, Vblk] = process_cast_reduced_fcs(header_dir, unit_number, data_fi
 %   --------------
 %   avg: averaged and derived quantities
 %   Vblk: raw data reshaped into blocks
+%   Vpsi: fits to voltage spectra
+%   Vavg: voltage quantities for temperature, pressure, and profiling speed
 %
 %   Ken Hughes, July 2021
 
