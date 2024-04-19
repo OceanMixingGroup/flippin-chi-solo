@@ -16,6 +16,7 @@ For full details, see
 - `reducedC`: The processing in C language using the MATLAB data reduction scheme from `reduce`
 - `other`: Functions called by both methods
 - `comp`: Functions used with compressed files
+- `sat`: Documentation and scripts for parsing and processing .sat files
  
 ## Dependencies (beyond standard Matlab tools):
 
