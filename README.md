@@ -15,7 +15,8 @@ For full details, see
 - `reduce`: The processing using the data reduction scheme
 - `reducedC`: The processing in C language using the MATLAB data reduction scheme from `reduce`
 - `other`: Functions called by both methods
-
+- `comp`: Functions used with compressed files
+ 
 ## Dependencies (beyond standard Matlab tools):
 
 Seawater toolbox functions (`sw_... .m`), copies of which are available at `github.com/OceanMixingGroup/chipod_gust/tree/master/software/mix_files`.
