@@ -65,7 +65,6 @@ data.T1Mean = (dvals(11:16:end) + 2^8.*(dvals(12:16:end)))*6.2500e-05;
 data.T2Mean = (dvals(13:16:end) + 2^8.*(dvals(14:16:end)))*6.2500e-05;
 data.pEnd = (dvals(15:16:end) + 2^8.*(dvals(16:16:end)))*6.2500e-05;
 
-headval(2)
 tv = headval(2)  + data.ticks*512./100.0; % seconds since base
  %   data.daytime(i) = mod( data.THi(i) * 65536.0 + data.TLo(i), 86400) +  data.tick(i)/100.0;
 tv = tv./86400.0;  % matlab keeps time in days
