@@ -50,11 +50,11 @@ for dummy = 1:num_iterations
         chi_init1(:, ii) = calc_chi_init(...
             Vpsi.psi_T1P_fit(:, ii), Vavg.T1, eps1_chi, avg.nu, head.coef.T1, head.coef.T1P);
         chi_init2(:, ii) = calc_chi_init(...
-            Vpsi.psi_T2P_fit(:, ii), Vavg.T2, eps1_chi, avg.nu, head.coef.T2, head.coef.T2P);
+            Vpsi.psi_T2P_fit(:, ii), Vavg.T2, eps2_chi, avg.nu, head.coef.T2, head.coef.T2P);
         F_Kr1(:, ii) = calc_F_Kr(...
             avg.chi_init1(:, ii), eps1_chi, avg.Wspd, avg.nu, avg.DT, fl, fh);
         F_Kr2(:, ii) = calc_F_Kr(...
-            avg.chi_init2(:, ii), eps1_chi, avg.Wspd, avg.nu, avg.DT, fl, fh);
+            avg.chi_init2(:, ii), eps2_chi, avg.Wspd, avg.nu, avg.DT, fl, fh);
         chi1(:, ii) = correct_chi_init(chi_init1(:, ii), F_Kr1(:, ii));
         chi2(:, ii) = correct_chi_init(chi_init2(:, ii), F_Kr2(:, ii));
 
