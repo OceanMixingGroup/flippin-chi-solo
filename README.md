@@ -20,7 +20,7 @@ For full details, see
  
 ## Dependencies (beyond standard Matlab tools):
 
-Seawater toolbox functions (`sw_... .m`), copies of which are available at `github.com/OceanMixingGroup/chipod_gust/tree/master/software/mix_files`.
+Seawater toolbox functions (`sw_... .m`), copies of which are available at `github.com/OceanMixingGroup/chipod_gust/tree/master/software/mix_files`. Some versions of the seawater toolbox do not work with vectors and will not work here.
 
 `integrate.m` from  
 `github.com/OceanMixingGroup/mixingsoftware/blob/master/marlcham/integrate.m`
