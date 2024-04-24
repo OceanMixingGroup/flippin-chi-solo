@@ -32,7 +32,7 @@ num_iterations = 7;  % 5 iterations should be overkill
 % Stratification
 dTdz = -gradient(avg.T)./gradient(avg.P);
 S0 = 34.7;
-N2 = g*sw_alpha(avg.T, S0*ones(size(avg.P)), avg.P).*dTdz;
+N2 = g*sw_alpha(S0*ones(size(avg.P)), avg.T, avg.P).*dTdz;
 N2(dTdz < dTdz_min) = NaN;
 
 % Iterate to get epsilon from chi following
