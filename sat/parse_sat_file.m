@@ -61,7 +61,7 @@ function [dive_data, dive_nums, lon, lat, t_lonlat] = read_sat_file(sat_filename
             pkts{pkt_num, dive_num} = pkt;
         end
 
-        if strcmp(text_line(1:3), 'G  ')
+        if strcmp(text_line(1:2), 'G ')
             % Example:
             % G  140 1 31 May 2023 09:30 +19 30.10 +141 34.73   20 13 33 39 48  0.7 ...
             % ... 0    19.50159   141.57889
