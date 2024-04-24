@@ -1,4 +1,4 @@
-unit = '4002'
+unit = '4003'
 % Where outputs from parse_fcs_sat_file.m went
 binary_out_directory = ['/home/hugke729/tmp_fcs/' unit '/'];
 % Where header_FCS001.mat and header_FCS002.mat are
@@ -18,19 +18,24 @@ avg = cell(Nfiles);
 % parfor from the Parallel processing toolbox can speed this up a lot
 % but regular for also works
 parfor ii = 1:length(files)
+% for ii = 1:length(files)
 
-    % If file is too small or too big, it's probably a bad file
+    fname = [files(ii).folder '/' files(ii).name];
+    t = datenum(fname(end-18:end-5), 'yyyymmddHHMMSS');
+
     if files(ii).bytes < 100 | files(ii).bytes > 10000
+        % File is too small or too big, so it's probably a bad file
+        continue
+    elseif strcmp(unit, '4003') & (t > datenum(2023, 6, 23) & t < datenum(2023, 7, 5))
+        % No thermistors or shear probes were functioning
         continue
     end
-    fname = [files(ii).folder '/' files(ii).name];
 
     % The main processing part
     % github.com/OceanMixingGroup/flippin-chi-solo/tree/main/comp
-    disp(['Processing ' fname])
+    disp(['Processing ' fname '  File number: ' num2str(ii)])
     avg{ii} = process_cast_comp_fcs(header_dir, unit, fname);
 
-    t = datenum(fname(end-18:end-5), 'yyyymmddHHMMSS');
     avg{ii}.lat = interp1(locs.t_lonlat, locs.lat, t);
     avg{ii}.lon = interp1(locs.t_lonlat, locs.lon, t);
 end
@@ -41,3 +46,4 @@ avg = {avg{~missing}};
 % Save individual profiles as dives
 readme = 'Created with /home/hugke729/osu/data/arcterx/scripts/convert_comp_to_mat.m'
 save([binary_out_directory unit '_chi.mat'], 'avg', 'readme')
+
