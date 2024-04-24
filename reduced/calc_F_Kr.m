@@ -37,8 +37,7 @@ function F_Kr_i = calc_F_Kr_single(chi_init, epsilon, Wspd, nu, DT, fl, fh)
     k = linspace(kl, kh);  % Must be linspace in order for mean to be equivalent to integral
     f = Wspd*k;
 
-    F_Kr_is_solvable = isfinite(chi_init) & isfinite(epsilon) & F_Kr_implicit_eqn(1e-20) > 0;
-    if F_Kr_is_solvable
+    if isfinite(chi_init) & isfinite(epsilon) & F_Kr_implicit_eqn(1e-20) > 0;
         F_Kr_i = fzero(@F_Kr_implicit_eqn, [1e-20, 1]);
     else
         F_Kr_i = NaN;
