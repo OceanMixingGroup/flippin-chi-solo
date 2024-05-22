@@ -41,7 +41,7 @@ function F_Na_i = calc_F_Na_single(eps_init, Wspd, nu, fl, fh)
     k = linspace(kl, kh); % Must be linspace in order for mean to be equivalent to integral
     f = Wspd*k;
 
-    if isfinite(eps_init) & eps_init > 0
+    if isfinite(eps_init) & eps_init > 0 & F_Na_implicit_eqn(1e-5) > 0;
         F_Na_i = fzero(@F_Na_implicit_eqn, [1e-5, 1]);
     else
         F_Na_i = NaN;
