@@ -9,8 +9,6 @@ function correct_Jan_1_2019_dates_within_sat_file(sat_filename)
     %
     % The issue is likely related to the chi clock not getting synced
     % quickly enough after a power cycle.
-    %
-    % As of writing, the issue only affects unit 4007
 
     % Method:
     % 1. Search line by line for the affected casts, which look like
