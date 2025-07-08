@@ -74,6 +74,18 @@ data.time = tv;
 head.starttime = datetime(headval(2), 'ConvertFrom','posixtime','TicksPerSecond',1e3,'Format','dd-MMM-yyyy HH:mm:ss.SSS');
 % head.endtime = datetime(headval(4), 'ConvertFrom','posixtime','TicksPerSecond',1e3,'Format','dd-MMM-yyyy HH:mm:ss.SSS');
 
+% Fix by Ken: July 2025
+if length(dvals) > 4096 && all(dvals([4097:4100, 4107:4128]) == [255*ones(4, 1); zeros(22, 1)])
+    % slow profile, such that tick counter rolls over and a new file (buffer?) starts
+    % This appears to take 5-10 s, but it is variable
+    % Remove the 257th and 258th values of each field, since these aren't data
+    Nt = length(data.ticks)-2;
+    flds = fields(data);
+    for ii = 1:length(flds)
+        data.(flds{ii}) = data.(flds{ii})([1:256, 259:Nt+2]);
+    end
+    data.time(257:Nt) = data.time(257:Nt) + 256*5.12/86400;
+end
 
 fclose(fid);
 end
